@@ -1,11 +1,16 @@
 
 
 
+// VERSÃO RUIM
+
+
+
 package model.entities;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
 
 public class Reservation {
     
@@ -13,6 +18,7 @@ public class Reservation {
     private Date checkin;
     private Date checkout;
     
+
     //para nao ser instanciado cada objeto da aplicação
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     
@@ -25,7 +31,6 @@ public class Reservation {
     }
     
     //modificadores 
-
     public Integer getRoomNumber() {
         return roomNumber;
     }
@@ -46,10 +51,19 @@ public class Reservation {
     }
  
     //metodo para atualizar as datas 
-    public void updateDates (Date checkin, Date checkout){
-        this.checkin = checkin;
-        this.checkout = checkout;
-    }
+    public String updateDates (Date checkin, Date checkout){
+        
+            Date now = new Date();
+            if(checkin.before(now) || checkout.before(now) ) {
+               return "Reservation dates for update must be future dates";
+            }
+            if( ! checkout.after(checkin) ) {
+               return "Check-out date must be after check-in date";
+            }
+            this.checkin = checkin;
+            this.checkout = checkout;
+            return null; // retornar nulo é sem erro
+         }
     
     //toString
     @Override
