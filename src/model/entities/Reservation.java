@@ -1,8 +1,7 @@
 
 
 
-// VERSÃO RUIM
-
+// METODO BOM
 
 
 package model.entities;
@@ -10,7 +9,7 @@ package model.entities;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+import model.exceptions.Domain_Exception;
 
 public class Reservation {
     
@@ -18,17 +17,20 @@ public class Reservation {
     private Date checkin;
     private Date checkout;
     
-
     //para nao ser instanciado cada objeto da aplicação
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     
     
     //construtores
-    public Reservation(Integer roomNumber, Date checkin, Date checkout) {
-        this.roomNumber = roomNumber;
-        this.checkin = checkin;
-        this.checkout = checkout;
-    }
+    public Reservation(Integer roomNumber, Date checkin, Date checkout)  {
+    // tratando exceções
+       if ( ! checkout.after(checkin) ) {
+               throw new Domain_Exception ("Check-out date must be after check-in date");
+            }
+            this.roomNumber = roomNumber;
+            this.checkin = checkin;
+            this.checkout = checkout;
+        }
     
     //modificadores 
     public Integer getRoomNumber() {
@@ -51,19 +53,19 @@ public class Reservation {
     }
  
     //metodo para atualizar as datas 
-    public String updateDates (Date checkin, Date checkout){
+    public void updateDates (Date checkin, Date checkout)  {
         
-            Date now = new Date();
-            if(checkin.before(now) || checkout.before(now) ) {
-               return "Reservation dates for update must be future dates";
-            }
-            if( ! checkout.after(checkin) ) {
-               return "Check-out date must be after check-in date";
-            }
-            this.checkin = checkin;
-            this.checkout = checkout;
-            return null; // retornar nulo é sem erro
-         }
+        Date now = new Date();
+        if (checkin.before(now) || checkout.before(now) ) {
+           throw new Domain_Exception ("Reservation dates for update must be future dates");
+        }
+        if ( ! checkout.after(checkin) ) {
+           throw new Domain_Exception ("Check-out date must be after check-in date");
+        }
+        this.checkin = checkin;
+        this.checkout = checkout;
+
+    }
     
     //toString
     @Override
